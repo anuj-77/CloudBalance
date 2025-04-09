@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: backEnd
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/test2
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  jwt:
+    secret = aB3dE5Fg/7HiJ9KlMnOpQrStUvWxYz/1A2B3C4D5E6F7G8H9I=
+    expiration = 86400000
