@@ -1,0 +1,37 @@
+.footer-container {
+    background-color: #e4e7ec; /* Tailwind's gray-100 */
+    font-size: 0.875rem; /* Tailwind's text-sm */
+    color: #1c73ff; /* Tailwind's gray-700 */
+    padding:  0.75rem; 
+    /* padding-right: 24rem; */
+    
+
+    align-items: center;
+    width: 99%;
+    position: fixed;
+    bottom: 0;
+    z-index: 50;
+
+    display: flex;
+    justify-content: space-between;   
+
+    /* width:50%; */
+    width: -webkit-fill-available;
+    
+  }
+  
+  .footer-link {
+    color: #3b82f6; /* Tailwind's blue-500 */
+    text-decoration: none;
+  }
+  
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-right {
+    font-size: 0.75rem; /* Tailwind's text-xs */
+    color: #6b7280; /* Tailwind's gray-500 */
+    padding-right: 10px;
+  }
+  

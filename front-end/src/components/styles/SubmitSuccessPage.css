@@ -1,0 +1,33 @@
+/* SubmitSuccessPage.css */
+
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh; 
+    background-color: #f9f9f9; /* Optional: light background */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .success-content {
+    text-align: center;
+    max-width: 850px;
+  }
+  
+  .success-content img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+  }
+  
+  .blue-box {
+    background-color: #e0f0ff;
+    border: 1px solid #b3d7ff;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    /* border-radius: 8px; */
+    color: #003366;
+  }
+  

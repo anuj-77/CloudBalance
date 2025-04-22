@@ -1,9 +1,14 @@
 package com.cloudBalance.backEnd.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.BatchSize;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -12,10 +17,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    @NotNull
+//    @Column(nullable = false)
+//    private String name;
+
     @NotNull
     @Column(nullable = false)
-    private String name;
+    private String firstName;
 
+    @NotNull
+    @Column(nullable = false)
+    private String lastName;
+    @Email
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -25,5 +38,16 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private ERole role;
+
+    @Column(nullable = true)
+    private LocalDateTime lastLogin;
+
+    @ManyToMany
+    @JoinTable(
+            name = "User_account",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "account")
+    )
+    private List<Accounts> accounts = new ArrayList<>();
 
 }

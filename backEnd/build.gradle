@@ -44,6 +44,16 @@ dependencies {
 
 	implementation 'jakarta.validation:jakarta.validation-api'
 	implementation 'org.hibernate.validator:hibernate-validator'
+
+//	aws dependencies
+	implementation platform("software.amazon.awssdk:bom:2.25.0")
+// Core SDK
+	implementation "software.amazon.awssdk:sts"
+	implementation "software.amazon.awssdk:ec2"
+	implementation "software.amazon.awssdk:rds"
+	implementation "software.amazon.awssdk:autoscaling"
+
+
 }
 
 tasks.named('test') {

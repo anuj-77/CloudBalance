@@ -17,9 +17,9 @@ import java.util.Date;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
-    private final JWTService jwtService;
-    private final BlackListTokenRepository blackListTokenRepository;
+
 
 
     @PostMapping("/login")
@@ -27,23 +27,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.authenticate(loginRequest));
     }
 
-    //logoutController and token blacklist functionality
+
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(
-            @RequestHeader("Authorization") String authorizationHeader
-    ) {
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-            Date expiration = jwtService.getExpirationDateFromToken(token);
-            BlackListToken blackListToken = new BlackListToken();
-            blackListToken.setToken(token);
-            blackListToken.setExpiryDate(expiration);
-            blackListTokenRepository.save(blackListToken);
-            SecurityContextHolder.clearContext();
-            return ResponseEntity.ok("Logout successful");
-        }else {
-            return ResponseEntity.badRequest().body("Invalid token");
-        }
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader) {
+        return authService.logout(authorizationHeader);
     }
+
 
 }

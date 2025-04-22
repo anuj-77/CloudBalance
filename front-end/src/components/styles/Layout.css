@@ -1,0 +1,64 @@
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    /* min-height: 100vh; */
+    overflow: hidden;
+  }
+  
+  /* HEADER */
+  /* header {
+    height: 60px; 
+    width: 100%;
+    flex-shrink: 0;
+    z-index: 1000;
+  } */
+  
+  /* FOOTER */
+  /* footer {
+    height: 40px; 
+    width: 100%;
+    flex-shrink: 0;
+    z-index: 1000;
+    background-color: #f3f4f6;
+    border-top: 1px solid #e5e7eb;
+  } */
+  
+  /* MIDDLE CONTENT: SIDEBAR + MAIN */
+  .layout-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  /* SIDEBAR */
+  /* .sidebar-container { */
+    /* width: 16rem; 
+    background-color: #1f2937;
+    color: white;
+    flex-shrink: 0;
+    height: 100%;
+    overflow-y: auto; */
+  /* } */
+  
+  /* MAIN DASHBOARD */
+  /* .layout-content { */
+    /* flex: 1; */
+    /* padding: 2rem; */
+    /* height: calc(100vh - 163px); */
+    
+    /* overflow-y: auto; */
+    /* background-color: #f9fafb; */
+  /* } */
+
+  .layout-content {
+    flex: 1;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    min-height: 0; /* Ensures proper flex behavior */
+  }
+  
+  .layout-body{
+    display: flex    ;
+        justify-content: left;
+  }
+  
