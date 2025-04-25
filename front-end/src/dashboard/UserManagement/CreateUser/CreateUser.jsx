@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { createUserFormConfig } from './createUserFormConfig';
-import '../../../components/styles/CreateUser.css';
 import { createUser } from '../../../axios/api/authService';
 import { toast } from 'react-toastify';
 import AccountSelector from '../../../components/AccountSelector/AccountSelector';
+import '../../../components/styles/CreateUser.css';
 
 function CreateUser({ onClose }) {
   const initialFormState = createUserFormConfig.reduce((acc, field) => {
@@ -13,6 +13,7 @@ function CreateUser({ onClose }) {
 
   const [formData, setFormData] = useState(initialFormState);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,20 +22,35 @@ function CreateUser({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.role) {
+      toast.error('Please fill out all required fields.');
+      return;
+    }
+  
+    if (!formData.email.includes('@') || !formData.email.includes('.')) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+  
+    
     const finalPayload = {
       ...formData,
       accounts: formData.role === 'CUSTOMER' ? selectedAccounts : [],
     };
-
+  
+    setSubmitting(true); 
+  
     try {
-      const response = await createUser(finalPayload);
-      console.log('User created:', response);
+      await createUser(finalPayload);
       toast.success('User created successfully!');
-      onClose(); // Close the modal upon successful creation
+      onClose(); 
     } catch (err) {
       console.error('Error creating user:', err);
-      toast.error('Failed to create user.');
+      toast.error(err?.response?.data?.message || 'Failed to create user.');
+    } finally {
+      setSubmitting(false); 
     }
   };
 
@@ -44,9 +60,8 @@ function CreateUser({ onClose }) {
       <div className="form-grid">
         {createUserFormConfig.map((field) => (
           <div
-            className={`form-group ${
-              field.type === 'select' ? 'full-width' : ''
-            }`}
+            className={`form-group ${field.type === 'select' ? 'full-width' : ''
+              }`}
             key={field.name}
           >
             <label>{field.label}</label>
@@ -83,10 +98,10 @@ function CreateUser({ onClose }) {
           setSelectedAccounts={setSelectedAccounts}
         />
       )}
-
-      <button type="submit" className="submit-btn">
-        Create User
+      <button type="submit" className="submit-btn" disabled={submitting}>
+        {submitting ? 'Creating...' : 'Create User'}
       </button>
+
     </form>
   );
 }

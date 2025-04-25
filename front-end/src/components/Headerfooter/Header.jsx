@@ -6,6 +6,8 @@ import logout from '../../assets/logout.png';
 import '../styles/Header.css';
 import { logoutUser, getCurrentUser } from '../../axios/api/authService';
 import { toast } from 'react-toastify';
+
+
 function Header() {
     const navigate = useNavigate();
     const [userName, setUserName] = useState('');
@@ -47,15 +49,15 @@ function Header() {
         <header className="header-container">
             <div className="logo-wrapper">
                 <img src={logo} alt="CloudBalance Logo" className="logo-img" />
-            </div>                    
+            </div>
 
             <div className="logout-wrapper">
 
-            <div className="welcome-wrapper">
-                <img src={user} alt="Accoount" className="account-logo" />
+                <div className="welcome-wrapper">
+                    <img src={user} alt="Accoount" className="account-logo" />
 
-                {userName && <span className="welcome-message"><div>Welcome</div> {userName}</span>}
-            </div>
+                    {userName && <span className="welcome-message"><div>Welcome</div> {userName}</span>}
+                </div>
 
                 <button className="logout-button" onClick={handleLogout}>
                     <img src={logout} alt="Logout" className="logout-icon" />

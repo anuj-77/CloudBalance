@@ -1,11 +1,8 @@
 package com.cloudBalance.backEnd.model;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.hibernate.annotations.BatchSize;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +14,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @NotNull
-//    @Column(nullable = false)
-//    private String name;
-
     @NotNull
     @Column(nullable = false)
     private String firstName;
@@ -28,6 +21,7 @@ public class User {
     @NotNull
     @Column(nullable = false)
     private String lastName;
+
     @Email
     @Column(unique = true, nullable = false)
     private String email;

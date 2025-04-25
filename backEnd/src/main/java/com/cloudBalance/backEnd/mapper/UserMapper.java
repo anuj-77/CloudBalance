@@ -5,7 +5,6 @@ import com.cloudBalance.backEnd.model.Accounts;
 import com.cloudBalance.backEnd.model.ERole;
 import com.cloudBalance.backEnd.model.User;
 import com.cloudBalance.backEnd.repository.AccountsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -15,14 +14,15 @@ import java.util.stream.Collectors;
 @Component
 public class UserMapper {
 
-    @Autowired
-    private AccountsRepository accountsRepository;
+    private final AccountsRepository accountsRepository;
+    public UserMapper(AccountsRepository accountsRepository) {
+        this.accountsRepository = accountsRepository;
+    }
 
-    public User userMap (UserDTO userDTO) {
 
+    public User userMap(UserDTO userDTO) {
         User entity = new User();
         entity.setId(userDTO.getId());
-//        entity.setName(userDTO.getName());
         entity.setFirstName(userDTO.getFirstName());
         entity.setLastName(userDTO.getLastName());
         entity.setEmail(userDTO.getEmail());
@@ -31,24 +31,24 @@ public class UserMapper {
         entity.setRole(ERole.valueOf(userDTO.getRole()));
 
         if (userDTO.getAccounts() != null && !userDTO.getAccounts().isEmpty()) {
-            List<Accounts> accounts = userDTO.getAccounts().stream().map(id -> {
-                return accountsRepository.findById(id)
-                        .orElseThrow(() ->
-                                new RuntimeException("Account not found with id: " + id)
-                        );
-            }).collect(Collectors.toList());
+            List<Accounts> accounts = userDTO.getAccounts().stream().map(id ->
+                    accountsRepository.findById(id)
+                            .orElseThrow(() ->
+                                    new RuntimeException("Account not found with id: " + id)
+                            )
+            ).collect(Collectors.toList());
 
             entity.setAccounts(accounts);
-        } else {entity.setAccounts(Collections.emptyList());
+        } else {
+            entity.setAccounts(Collections.emptyList());
+        }
 
-        };
-        
         return entity;
     }
-    public UserDTO userDTOMap (User entity) {
+
+    public UserDTO userDTOMap(User entity) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(entity.getId());
-//        userDTO.setName(entity.getName());
         userDTO.setFirstName(entity.getFirstName());
         userDTO.setLastName(entity.getLastName());
         userDTO.setLastLogin(entity.getLastLogin());

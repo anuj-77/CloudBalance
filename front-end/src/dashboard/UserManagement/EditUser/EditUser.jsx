@@ -1,49 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getUserById, updateUser } from '../../../axios/api/authService';
+import { updateUser, getUserById } from '../../../axios/api/authService';
 import AccountSelector from '../../../components/AccountSelector/AccountSelector';
 import '../../../components/styles/EditUser.css';
 import { toast } from 'react-toastify';
-import UserDetails from './UserDetails';
 
-function EditUser() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+function EditUser({ userId, onClose }) {
 
-  // Initialize formData as null to indicate loading state
-  const [formData, setFormData] = useState(null);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    role: '',
+  });
+
   const [selectedAccounts, setSelectedAccounts] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
 
   useEffect(() => {
     const fetchUser = async () => {
+
       try {
-        const user = await getUserById(id);
+        const user = await getUserById(userId);
         setFormData({
           firstName: user?.firstName || '',
           lastName: user?.lastName || '',
           email: user?.email || '',
           role: user?.role || '',
         });
+
         setSelectedAccounts(user?.accounts || []);
+
       } catch (error) {
         console.error('Error fetching user:', error);
         toast.error('Failed to fetch user data.');
+
       } finally {
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false);
+
       }
     };
 
     fetchUser();
-  }, [id]);
+  }, [userId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
 
     const payload = {
       ...formData,
@@ -51,27 +61,29 @@ function EditUser() {
     };
 
     try {
-      await updateUser(id, payload);
+      await updateUser(userId, payload);
       toast.success('User updated successfully!');
-      navigate('/dashboard/UserManagement');
+      onClose();
     } catch (error) {
       console.error('Error updating user:', error);
       toast.error('Failed to update user.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  // Show loading indicator while data is being fetched
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="user-form-container">Loading...</div>;
   }
 
   return (
     <div className="user-form-container">
-      
       <form onSubmit={handleSubmit} className="user-form">
-        <h2>Edit User</h2>
+        <div className="modal-header">
+          <h2>Edit User</h2>
+        </div>
+
         <div className="form-grid">
-          
           <div className="form-group">
             <label>First Name</label>
             <input
@@ -124,7 +136,6 @@ function EditUser() {
           </div>
         </div>
 
-        {/* Show AccountSelector only for CUSTOMER role */}
         {formData.role === 'CUSTOMER' && (
           <AccountSelector
             selectedAccounts={selectedAccounts}
@@ -132,9 +143,11 @@ function EditUser() {
           />
         )}
 
-        <button type="submit" className="submit-btn">
-          Update User
+        <button type="submit" className="submit-btn" disabled={submitting}>
+          {submitting ? 'Updating...' : 'Update User'}
         </button>
+
+
       </form>
     </div>
   );

@@ -9,6 +9,7 @@ import com.cloudBalance.backEnd.repository.AccountsRepository;
 import com.cloudBalance.backEnd.repository.UserRepository;
 import com.cloudBalance.backEnd.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,18 +21,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AccountsRepository accountsRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final AccountsRepository accountsRepository;
 
     @Override
     public UserDTO createUser(UserDTO userDTO){
@@ -55,30 +51,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.userDTOMapWithoutPassword(user);
     }
 
-//    @Transactional
-//    @Override
-//    public String updateUser(Long id, UserDTO userDTO) {
-//        User existingUser = userRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-//        existingUser.setEmail(userDTO.getEmail());
-////        existingUser.setName(userDTO.getName());
-//        existingUser.setFirstName(userDTO.getFirstName());
-//        existingUser.setLastName(userDTO.getLastName());
-//
-//        if (userDTO.getPassword() != null) {
-//            existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-//        }
-//
-//        // for updating user from CUSTOMER
-//        if (newRole == ERole.CUSTOMER){
-//            if (userDTO.getAccounts() != null&&)
-//        }
-//
-//
-//        existingUser.setRole(ERole.valueOf(userDTO.getRole()));
-//        User updatedUser = userRepository.save(existingUser);
-//        return "User Updated";
-//    }
 
 @Transactional
 @Override
@@ -121,7 +93,7 @@ public String updateUser(Long id, UserDTO userDTO) {
     @Override
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(userMapper:: userDTOMap).collect(Collectors.toList());
+        return users.stream().map(userMapper:: userDTOMap).toList();
     }
 
 

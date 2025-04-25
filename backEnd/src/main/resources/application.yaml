@@ -3,7 +3,7 @@ spring:
     name: backEnd
 
   datasource:
-    url: jdbc:mysql://localhost:3306/Cloudbalance
+    jdbc-url: jdbc:mysql://localhost:3306/Cloudbalance
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
@@ -20,3 +20,9 @@ spring:
   jwt:
     secret = aB3dE5Fg/7HiJ9KlMnOpQrStUvWxYz/1A2B3C4D5E6F7G8H9I=
     expiration = 86400000
+
+  snowflake:
+    url: jdbc:snowflake://YFYRZGG-BWB35436.snowflakecomputing.com/?warehouse=COMPUTE_WH&db=aws&schema=cost
+    username: ro_user
+    password: fRe$her@b00tc@mp2025
+    driver-class-name: net.snowflake.client.jdbc.SnowflakeDriver

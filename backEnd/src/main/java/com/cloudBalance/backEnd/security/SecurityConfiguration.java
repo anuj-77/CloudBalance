@@ -27,11 +27,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 public class SecurityConfiguration {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
 
-    @Autowired
-    private AuthFilter authFilter;
+    private final AuthFilter authFilter;
+    private final UserDetailsService userDetailsService;
+
+    public SecurityConfiguration(UserDetailsService userDetailsService, AuthFilter authFilter) {
+        this.userDetailsService = userDetailsService;
+        this.authFilter = authFilter;
+    }
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

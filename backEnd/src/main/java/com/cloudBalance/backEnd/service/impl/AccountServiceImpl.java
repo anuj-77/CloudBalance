@@ -5,6 +5,7 @@ import com.cloudBalance.backEnd.mapper.AccountsMapper;
 import com.cloudBalance.backEnd.model.Accounts;
 import com.cloudBalance.backEnd.repository.AccountsRepository;
 import com.cloudBalance.backEnd.service.AccountService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +13,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    @Autowired
-    private AccountsRepository accountsRepository;
-    @Autowired
-    private AccountsMapper accountsMapper;
+    private final AccountsRepository accountsRepository;
+    private final AccountsMapper accountsMapper;
 
 
     public AccountsDTO createAccounts(AccountsDTO accountsDTO){

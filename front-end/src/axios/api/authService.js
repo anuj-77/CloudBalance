@@ -37,3 +37,24 @@ export const logoutUser = () => {
   export const addAccount = (formData) => {
     return api.post('/api/accounts', formData); 
   };
+
+  export const getAwsServiceData = async (type, roleArn) => {
+    let endpoint = "";
+  
+    switch (type.toLowerCase()) {
+      case "ec2":
+        endpoint = `/api/aws/ec2?roleArn=${encodeURIComponent(roleArn)}`;
+        break;
+      case "rds":
+        endpoint = `/api/aws/rds?roleArn=${encodeURIComponent(roleArn)}`;
+        break;
+      case "asg":
+        endpoint = `/api/aws/asg?roleArn=${encodeURIComponent(roleArn)}`;
+        break;
+      default:
+        throw new Error("Invalid AWS service type");
+    }
+  
+    return await api.get(endpoint);
+  };
+  

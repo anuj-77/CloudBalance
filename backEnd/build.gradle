@@ -53,6 +53,10 @@ dependencies {
 	implementation "software.amazon.awssdk:rds"
 	implementation "software.amazon.awssdk:autoscaling"
 
+//	snowflakes
+	implementation("net.snowflake:snowflake-jdbc:3.23.1")
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
 
 }
 

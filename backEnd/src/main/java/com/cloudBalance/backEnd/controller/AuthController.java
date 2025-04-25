@@ -6,6 +6,7 @@ import com.cloudBalance.backEnd.model.BlackListToken;
 import com.cloudBalance.backEnd.repository.BlackListTokenRepository;
 import com.cloudBalance.backEnd.security.jwt.JWTService;
 import com.cloudBalance.backEnd.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,18 +21,14 @@ public class AuthController {
 
     private final AuthService authService;
 
-
-
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> authenticate(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.authenticate(loginRequest));
     }
-
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader) {
         return authService.logout(authorizationHeader);
     }
-
 
 }

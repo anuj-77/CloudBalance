@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -67,6 +68,8 @@ public class GlobalExceptionHandler {
                     public ProblemDetail updateAndGetBody(MessageSource messageSource, Locale locale) {
                         return ErrorResponse.super.updateAndGetBody(messageSource, locale);
                     }
+
+
                 },
                 status
         );
@@ -117,4 +120,9 @@ public class GlobalExceptionHandler {
         log.error("Unhandled Exception", ex);
         return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "Something went wrong", request);
     }
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<String> handleAccountNotFound(AccountNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
 }

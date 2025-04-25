@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getAllUsers } from '../../axios/api/authService';
-import '../../components/styles/UserManagement.css';
 import { userTableColumns } from './userTableConfig';
-import { useNavigate } from 'react-router-dom';
 import { formatRole } from '../../roleUtils/roleUtils';
 import Modal from '../../components/modal/Modal';
 import CreateUser from './CreateUser/CreateUser';
+import EditUser from './EditUser/EditUser';
+import Pagination from '../../components/Pagination/Pagination';
+import '../../components/styles/UserManagement.css';
 
 function UserManagement() {
   const role = useSelector((state) => state.user.role);
@@ -14,32 +15,34 @@ function UserManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
-
-  // Modal thing
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
-  const navigate = useNavigate();
-
-  const handleAddUser = () => {
-    navigate('/dashboard/UserManagement/CreateUser');
+  const openEditModal = (userId) => {
+    setSelectedUserId(userId);
+    setEditModalOpen(true);
   };
 
-  const handleEditUser = (userId) => {
-    navigate(`/dashboard/UserManagement/EditUser/${userId}`);
+  const closeEditModal = () => {
+    setSelectedUserId(null);
+    setEditModalOpen(false);
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await getAllUsers();
+      setUsers(response);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await getAllUsers();
-        setUsers(response);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    })();
+    fetchUsers();
   }, []);
 
   const indexOfLastRecord = currentPage * recordsPerPage;
@@ -53,25 +56,22 @@ function UserManagement() {
       <p className="onboarding-subtitle">Manage your application's users below.</p>
 
       <div className="onboarding-box">
+        {role === 'ADMIN' && (
+          <div className="header-row">
+            <button className="add-user-btn" onClick={openModal}>+ Add New User</button>
+          </div>
+        )}
 
-        {/* <div className="header-row">
-          {role === 'ADMIN' && (
-            <button className="add-user-btn" onClick={handleAddUser}>
-              + Add New User
-            </button>
+
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <CreateUser onClose={closeModal} refreshUsers={fetchUsers} />
+        </Modal>
+
+        <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+          {selectedUserId && (
+            <EditUser userId={selectedUserId} onClose={closeEditModal} />
           )}
-        </div> */}
-
-        {/* Modal */}
-        
-        <div className="header-row">
-
-          <button className="add-user-btn" onClick={openModal}>+ Add New User</button>
-          <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <CreateUser onClose={closeModal} />
-          </Modal>
-
-        </div>
+        </Modal>
 
         <table className="user-table">
           <thead>
@@ -90,45 +90,31 @@ function UserManagement() {
                     {col.key === 'lastLogin'
                       ? user.lastLogin
                         ? new Date(user.lastLogin).toLocaleString()
-                        : 'Non-Logged in User'
+                        : 'Yet to Login'
                       : col.key === 'role'
                         ? formatRole(user.role)
                         : user[col.key]}
                   </td>
                 ))}
                 <td>
-                  <button
-                    className="edit-btn"
-                    onClick={() => handleEditUser(user.id)}
-                  >
-                    ✏️
-                  </button>
+                  {role === 'ADMIN' && (
+                    <button className="edit-btn" onClick={() => openEditModal(user.id)}>
+                      ✏️
+                    </button>
+                  )}
                 </td>
+
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Pagination */}
-        <div className="pagination">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            Prev
-          </button>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
 
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            Next
-          </button>
-        </div>
       </div>
     </div>
   );
