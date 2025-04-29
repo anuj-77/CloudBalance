@@ -3,6 +3,7 @@ import React from 'react';
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import ReactFusioncharts from 'react-fusioncharts';
+import Pagination from '../Pagination/Pagination';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 
 // Initialize FusionCharts modules

@@ -66,15 +66,15 @@ function CostExplorer() {
 
           {/* 🔥 Graph / Table Area */}
           <div className="cost-explorer-main-area">
-  {loading ? (
-    <SpinnerLoading />   // ✅ Use spinner here!
-  ) : (
-    <CostExplorerGraph
-      costData={costData}
-      groupByKey={selectedGroupBy}
-    />
-  )}
-</div>
+            {loading ? (
+              <SpinnerLoading />  
+            ) : (
+              <CostExplorerGraph
+                costData={costData}
+                groupByKey={selectedGroupBy}
+              />
+            )}
+          </div>
         </div>
 
         {/* 🔥 Sidebar */}
