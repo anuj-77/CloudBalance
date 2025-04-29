@@ -39,7 +39,7 @@ function Login() {
         try {
             const response = await loginUser(formData);
             localStorage.setItem('token', response.token);
-            toast.success('Login successful');
+            toast.success('Welcome To CloudBalance');
 
             const userResponse = await getCurrentUser();
             dispatch(setUserData(userResponse));

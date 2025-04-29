@@ -6,6 +6,7 @@ import DateRangeSelector from '../../components/DateRangeSelector/DateRangeSelec
 import CostExplorerGraph from '../../components/CostExplorerGraphs/CostExplorerGraphs';
 import useCostDataFetcher from './useCostDataFetcher';
 import SpinnerLoading from '../../components/SpinnerLoading/SpinnerLoading';
+import { exportToExcel } from '../../roleUtils/exporttoExcel';
 import '../../components/styles/CostExplorer.css'
 
 function CostExplorer() {
@@ -67,14 +68,26 @@ function CostExplorer() {
           {/* 🔥 Graph / Table Area */}
           <div className="cost-explorer-main-area">
             {loading ? (
-              <SpinnerLoading />  
+              <SpinnerLoading />
             ) : (
-              <CostExplorerGraph
-                costData={costData}
-                groupByKey={selectedGroupBy}
-              />
+              <>
+                {/* Render Graph */}
+                <CostExplorerGraph
+                  costData={costData}
+                  groupByKey={selectedGroupBy}
+                />
+
+                {/* Export Button only if Data loaded */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                  <button className="export-btn" onClick={() => exportToExcel(costData, selectedGroupBy)}>
+                    Export to Excel
+                  </button>
+                </div>
+              </>
             )}
           </div>
+
+
         </div>
 
         {/* 🔥 Sidebar */}

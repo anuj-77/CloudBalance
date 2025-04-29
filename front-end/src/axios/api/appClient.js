@@ -25,15 +25,14 @@ api.interceptors.response.use(
   (response) => response.data,
   (error) => {
     const status = error.response?.status;
+    const requestUrl = error.config?.url || "";
 
-    if (status === 401 || status === 403) {
-      // Token expired, invalid or forbidden
-      localStorage.removeItem('token');  // Clear token
+    // ✅ Allow /auth/login errors to be handled in component
+    const isLoginRequest = requestUrl.includes('/auth/login');
 
-      // Optional: Clear any other auth-related storage if needed
-
-      // Redirect to login page
-      window.location.href = '/';
+    if ((status === 401 || status === 403) && !isLoginRequest) {
+      localStorage.removeItem('token');
+      window.location.href = '/'; // redirect only for protected routes
     }
 
     const customError = {

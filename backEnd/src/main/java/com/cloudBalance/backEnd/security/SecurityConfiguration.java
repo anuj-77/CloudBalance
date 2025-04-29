@@ -1,6 +1,7 @@
 package com.cloudBalance.backEnd.security;
 
 import com.cloudBalance.backEnd.security.jwt.AuthFilter;
+import com.cloudBalance.backEnd.security.jwt.CustomAuthEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,10 +31,12 @@ public class SecurityConfiguration {
 
     private final AuthFilter authFilter;
     private final UserDetailsService userDetailsService;
+    private final CustomAuthEntryPoint customAuthEntryPoint;
 
     public SecurityConfiguration(UserDetailsService userDetailsService, AuthFilter authFilter) {
         this.userDetailsService = userDetailsService;
         this.authFilter = authFilter;
+        this.customAuthEntryPoint = new CustomAuthEntryPoint();
     }
 
 
@@ -43,19 +46,21 @@ public class SecurityConfiguration {
         httpSecurity
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        auth -> auth
-                                .requestMatchers("/auth/**").permitAll()
-                                .anyRequest().authenticated()
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthEntryPoint)) // 👉 add this line
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .sessionManagement(
-                        session -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        httpSecurity.
-                authenticationProvider(authenticationProvider());
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        httpSecurity.authenticationProvider(authenticationProvider());
         httpSecurity.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+
         return httpSecurity.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

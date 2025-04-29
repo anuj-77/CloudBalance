@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    margin: 1rem 0;
+    margin-top: 24px;
   }
   
   .date-picker {
