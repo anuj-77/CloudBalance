@@ -5,6 +5,7 @@ import GroupByPage from '../../components/GroupByPage';
 import DateRangeSelector from '../../components/DateRangeSelector/DateRangeSelector';
 import CostExplorerGraph from '../../components/CostExplorerGraphs/CostExplorerGraphs';
 import useCostDataFetcher from './useCostDataFetcher';
+import SpinnerLoading from '../../components/SpinnerLoading/SpinnerLoading';
 import '../../components/styles/CostExplorer.css'
 
 function CostExplorer() {
@@ -65,15 +66,15 @@ function CostExplorer() {
 
           {/* 🔥 Graph / Table Area */}
           <div className="cost-explorer-main-area">
-            {loading ? (
-              <p>Loading Cost Data...</p>
-            ) : (
-              <CostExplorerGraph
-                costData={costData}
-                groupByKey={selectedGroupBy}
-              />
-            )}
-          </div>
+  {loading ? (
+    <SpinnerLoading />   // ✅ Use spinner here!
+  ) : (
+    <CostExplorerGraph
+      costData={costData}
+      groupByKey={selectedGroupBy}
+    />
+  )}
+</div>
         </div>
 
         {/* 🔥 Sidebar */}

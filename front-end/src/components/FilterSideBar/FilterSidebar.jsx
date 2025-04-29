@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getFilterOptions, getGroupByOptions } from '../../axios/api/snowflakeService';
+import SpinnerLoading from '../SpinnerLoading/SpinnerLoading';
 import '../styles/FilterSideBar.css'
 
 const FilterSidebar = ({ selectedFilters, setSelectedFilters }) => {
@@ -83,7 +84,7 @@ const FilterSidebar = ({ selectedFilters, setSelectedFilters }) => {
             {expandedGroup === group.groupName && (
               <div className="filter-options-expanded">
                 {loadingGroup === group.groupName ? (
-                  <p>Loading...</p>
+                  <SpinnerLoading />
                 ) : (filterOptions[group.groupName] || []).length > 0 ? (
                   (filterOptions[group.groupName]).map((filter, idx) => (
                     <label key={idx} className="filter-option">
