@@ -45,40 +45,49 @@ function CostExplorer() {
           )}
         </div>
       </div>
-
       <div className="cost-explorer-box">
         <div className="cost-explorer-content">
-          <GroupByPage
-            selectedGroupBy={selectedGroupBy}
-            setSelectedGroupBy={setSelectedGroupBy}
-          />
-          <DateRangeSelector
-            startMonth={startMonth}
-            endMonth={endMonth}
-            setStartMonth={setStartMonth}
-            setEndMonth={setEndMonth}
-          />
-        </div>
-        <div className="cost-explorer-main-area">
-          {loading ? (
-            <p>Loading Cost Data...</p>
-          ) : (
-            <CostExplorerGraph
-              costData={costData}
-              groupByKey={selectedGroupBy}
+          {/* 🔥 GroupBy + DateSelectors Row */}
+          <div className="top-controls">
+            <GroupByPage
+              selectedGroupBy={selectedGroupBy}
+              setSelectedGroupBy={setSelectedGroupBy}
             />
-          )}
+            <div className="date-range-selectors">
+              <DateRangeSelector
+                startMonth={startMonth}
+                endMonth={endMonth}
+                setStartMonth={setStartMonth}
+                setEndMonth={setEndMonth}
+              />
+            </div>
+          </div>
+
+          {/* 🔥 Graph / Table Area */}
+          <div className="cost-explorer-main-area">
+            {loading ? (
+              <p>Loading Cost Data...</p>
+            ) : (
+              <CostExplorerGraph
+                costData={costData}
+                groupByKey={selectedGroupBy}
+              />
+            )}
+          </div>
         </div>
+
+        {/* 🔥 Sidebar */}
         <div className="cost-explorer-sidebar">
           <FilterSidebar
             selectedFilters={selectedFilters}
             setSelectedFilters={setSelectedFilters}
           />
         </div>
-
-        
       </div>
+
     </div>
+
+
   );
 }
 

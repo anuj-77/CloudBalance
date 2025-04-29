@@ -23,6 +23,7 @@ public class SnowFlakeController {
     public ResponseEntity<APIResponse<?>> getData(){
         return ResponseEntity.ok(new APIResponse<>(200, "Success", snowflakeService.getData()));
     }
+
     @PostMapping("/cost")
     public ResponseEntity<APIResponse<?>> getTotalCosting(@Valid @RequestBody UserCostExplorerRequest request) {
         return ResponseEntity.ok(
