@@ -51,7 +51,7 @@ const SearchableDropdown = ({ label = "Select Account", value, onChange }) => {
           <input
             type="text"
             className="dropdown-search"
-            placeholder="Search..."
+            placeholder="Type to Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

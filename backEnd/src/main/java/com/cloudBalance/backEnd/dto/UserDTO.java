@@ -25,8 +25,9 @@ public class UserDTO {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotNull(message = "Password cannot be null")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).{8,}$", message = "Password must be at least 8 characters long and contain an uppercase letter and number")
+//    @NotNull(message = "Password cannot be null")
+//    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).{8,}$", message = "Password must be at least 8 characters long and contain an uppercase letter and number")
+//    not used validations here as beacause of error coming when updating user.
     private String password;
 
     @NotNull(message = "Role cannot be null")

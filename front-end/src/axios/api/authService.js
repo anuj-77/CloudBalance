@@ -26,7 +26,7 @@ export const logoutUser = () => {
 
   export const getUserById = async (id) => {
     const response = await api.get(`/api/users/${id}`);
-    return response.data;
+    return response;
   };
   
   export const updateUser = async (id, data) => {

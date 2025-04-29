@@ -24,17 +24,6 @@ function CreateUser({ onClose }) {
     e.preventDefault();
   
     
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.role) {
-      toast.error('Please fill out all required fields.');
-      return;
-    }
-  
-    if (!formData.email.includes('@') || !formData.email.includes('.')) {
-      toast.error('Please enter a valid email address.');
-      return;
-    }
-  
-    
     const finalPayload = {
       ...formData,
       accounts: formData.role === 'CUSTOMER' ? selectedAccounts : [],
@@ -101,7 +90,6 @@ function CreateUser({ onClose }) {
       <button type="submit" className="submit-btn" disabled={submitting}>
         {submitting ? 'Creating...' : 'Create User'}
       </button>
-
     </form>
   );
 }

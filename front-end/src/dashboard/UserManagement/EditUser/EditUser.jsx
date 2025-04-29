@@ -76,6 +76,7 @@ function EditUser({ userId, onClose }) {
     return <div className="user-form-container">Loading...</div>;
   }
 
+  console.log("formData", formData);
   return (
     <div className="user-form-container">
       <form onSubmit={handleSubmit} className="user-form">

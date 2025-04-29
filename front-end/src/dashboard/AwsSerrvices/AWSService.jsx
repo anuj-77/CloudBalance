@@ -51,33 +51,34 @@ function AWSService() {
       <div className="aws-below-title">
         <p className="aws-subtitle">Manage your AWS Services here.</p>
 
-        <div style={{ width: '300px' }}>
+        <div >
           <SearchableDropdown
             label="Select Account"
             options={accounts}
             getOptionLabel={(acc) => acc.accountName}
-            getOptionValue={(acc) => acc.roleArn}
+            getOptionValue={(acc) => acc.r}
             value={selected}
             onChange={setSelected}
           />
           {selected && (
-            <p style={{ marginTop: '10px', color: '#318CE7' }}>
+            <p className='slected-account'>
               Selected Account: {selected.accountName}
             </p>
           )}
         </div>
       </div>
+      <div className='aws-service-box'>
+        <CustomTab tabMap={tabMap} activeTab={tabIndex} onChange={setTabIndex} />
 
-      <CustomTab tabMap={tabMap} activeTab={tabIndex} onChange={setTabIndex} />
-
-      {loading ? (
-        <SpinnerLoading />
-      ) : (
-        <CustomTable
-          columns={awsServiceColumns[tabMap[tabIndex].key]}
-          rows={data}
-        />
-      )}
+        {loading ? (
+          <SpinnerLoading />
+        ) : (
+          <CustomTable
+            columns={awsServiceColumns[tabMap[tabIndex].key]}
+            rows={data}
+          />
+        )}
+      </div>
     </div>
   );
 }

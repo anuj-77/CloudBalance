@@ -1,9 +1,10 @@
 .cost-explorer-container {
-    padding: 20px;
-    background-color: #f9fafb;
-    color: #1f2937;
-    font-family: Arial, sans-serif;
-  }
+  padding: 20px;
+  background-color: #f9fafb;
+  min-height: 85vh;
+  color: #1f2937;
+  font-family: Arial, sans-serif;
+}
   
   .cost-explorer-title {
     font-size: 28px;
@@ -16,3 +17,70 @@
     color: #6b7280;
     margin-bottom: 20px;
   }
+  .cost-explorer-below-title{
+    display: flex;
+    justify-content: space-between;
+  }
+  .cost-explorer-box {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+ 
+  .service-btn{
+    padding: 10px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    background: #eee;
+    border: none;
+    border-radius: 5px;
+    
+  }
+  .cost-explorer-box {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
+    display: flex; /* 👈 Make it flex */
+    gap: 24px; /* Gap between main content and sidebar */
+  }
+  
+  .cost-explorer-content {
+    flex: 1; /* 👈 Main content takes maximum space */
+  }
+  
+  .cost-explorer-sidebar {
+    width: 300px; /* 👈 Fixed width for sidebar */
+  }
+  .slected-account{
+    color: #7088b8;
+    font-size: 13px;
+  }
+
+  .cost-table-wrapper {
+    overflow-x: auto;
+    margin-top: 20px;
+  }
+  
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .cost-table th, .cost-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ccc;
+  }
+  
+  .cost-table th {
+    background-color: #f0f0f0;
+  }
+  
+  .cost-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  

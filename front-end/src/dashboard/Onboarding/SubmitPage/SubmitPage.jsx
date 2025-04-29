@@ -6,9 +6,6 @@ import img8 from '../../../assets/img-8.png';
 
 function SubmitPage(formData,) {
 
-
-
-
     return (
         <div className="onboarding-container">
             <h1 className="onboarding-title">Create Cost & Usage Report</h1>
@@ -63,7 +60,7 @@ function SubmitPage(formData,) {
                     </span>
 
                     <div className="check-icon-row">
-                        {/* <FaCheckSquare style={{ color: "grey", marginRight: "8px" }} /> */}
+                        
                         <span style={{ fontSize: "15px" }}>
                             The following default policy will be appliet to your bucket
                         </span>
@@ -107,7 +104,7 @@ function SubmitPage(formData,) {
                     Please make sure these checks are Enabled in Enable report data integration for:
                 </div>
                 <div className="check-icon-row">
-                    {/* <FaCheckSquare style={{ color: "grey", marginRight: "8px" }} /> */}
+                    
                     <span style={{ fontSize: "15px" }}>
                         Amazon Athena
                     </span>

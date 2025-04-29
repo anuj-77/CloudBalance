@@ -1,27 +1,8 @@
-/* .account-selector-container {
-    display: flex;
-    gap: 2rem;
-    margin-top: 1rem;
-  }
-  
-  .account-list, .account-selected {
-    flex: 1;
-    border: 1px solid #ccc;
-    padding: 1rem;
-    border-radius: 8px;
-    background: #f9f9f9;
-  }
-  
-  .account-list h4,
-  .account-selected h4 {
-    margin-bottom: 0.5rem;
-  }
-   */
-
    .account-selector-container {
     display: flex;
     gap: 2rem;
     margin-top: 1rem;
+    
   }
   
   .account-list,
@@ -30,14 +11,12 @@
     border: 1px solid #ccc;
     padding: 1rem;
     border-radius: 8px;
-    background: #f9f9f9;
-    
-    /* Add scrollable area */
-    max-height: 300px;   /* adjust as needed */
+    background: #f9f9f9;    
+    max-height: 300px;   
     overflow-y: auto;
   }
   
-  /* Optional: improve scrollbar aesthetics (for Webkit browsers like Chrome) */
+  
   .account-list::-webkit-scrollbar,
   .account-selected::-webkit-scrollbar {
     width: 8px;

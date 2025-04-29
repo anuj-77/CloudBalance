@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../components/styles/AWSService.css'
+import '../../components/styles/CustomTab.css'
 
 const CustomTab = ({ tabMap, activeTab, onChange }) => {
   return (

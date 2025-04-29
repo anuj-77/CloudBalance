@@ -1,0 +1,29 @@
+.tabs {
+    display: flex;
+    height:30px
+  }
+  
+  .tab {
+    padding: 5px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    background: #eee;
+    border: none;
+    border-radius: 5px;
+    height:30px
+  }
+  
+  .tab.active {
+    background: #007bff;
+    color: white;
+  }
+  .service-btn{
+    padding: 5px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    background: #eee;
+    border: none;
+    border-radius: 5px;
+    height:30px
+  }
+  

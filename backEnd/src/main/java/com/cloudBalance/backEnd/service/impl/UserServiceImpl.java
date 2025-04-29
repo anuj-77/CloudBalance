@@ -51,7 +51,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.userDTOMapWithoutPassword(user);
     }
 
-
 @Transactional
 @Override
 public String updateUser(Long id, UserDTO userDTO) {
@@ -63,9 +62,9 @@ public String updateUser(Long id, UserDTO userDTO) {
     existingUser.setLastName(userDTO.getLastName());
 
     // Update password if provided
-    if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
-        existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-    }
+//    if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
+//        existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+//    }
 
     // Update role
     ERole newRole = ERole.valueOf(userDTO.getRole());

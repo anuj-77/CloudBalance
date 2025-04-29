@@ -35,9 +35,9 @@ export const createUserFormConfig = [
     type: 'select',
     options: [
       { value: '', label: 'Select Role' },
-      { value: 'ADMIN', label: 'ADMIN' },
-      { value: 'READ_ONLY', label: 'READ_ONLY' },
-      { value: 'CUSTOMER', label: 'CUSTOMER' },
+      { value: 'ADMIN', label: 'Admin' },
+      { value: 'READ_ONLY', label: 'Read-Only' },
+      { value: 'CUSTOMER', label: 'Customer' },
     ],
     required: true,
   },

@@ -19,10 +19,16 @@ spring:
 
   jwt:
     secret = aB3dE5Fg/7HiJ9KlMnOpQrStUvWxYz/1A2B3C4D5E6F7G8H9I=
-    expiration = 86400000
+    expiration = 5*60000;
 
   snowflake:
     url: jdbc:snowflake://YFYRZGG-BWB35436.snowflakecomputing.com/?warehouse=COMPUTE_WH&db=aws&schema=cost
     username: ro_user
     password: fRe$her@b00tc@mp2025
     driver-class-name: net.snowflake.client.jdbc.SnowflakeDriver
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+#      add-mappings: false

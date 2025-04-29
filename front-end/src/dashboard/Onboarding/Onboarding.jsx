@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import '../../components/styles/Onboarding.css';
 import AddCustomerManagedPolicies from './AddCustomerMaanagedPolicies/AddCustomerManagedPolicies';
 import IAMRoleStep from './IAMRoleStep/IAMRoleStep';
 import SubmitPage from './SubmitPage/SubmitPage';
 import { addAccount } from '../../axios/api/authService';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import '../../components/styles/Onboarding.css';
 
 const initialFormData = {
   accountId: '',
@@ -45,18 +45,18 @@ function Onboarding() {
         roleArn: formData.roleArn
       };
 
-      const response = await addAccount(payload); // response = response.data
+      const response = await addAccount(payload); 
 
-      // ✅ If `id` is returned, assume success
+     
       if (response?.id) {
         toast.success('Form data submitted successfully');
         setFormData(initialFormData);
         setStep(1);
-        // ✅ Redirect after a short delay
+        
         setTimeout(() => {
           navigate('/dashboard/Onboarding/success');
         }, 1000); 
-        // 1 second delay to show toast
+        
       } else {
         toast.error('Error submitting form data');
       }
