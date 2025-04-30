@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllAccounts } from '../../axios/api/authService'; // or wherever your call is
+import { getAllAccounts } from '../../axios/api/authService'; 
 import '../styles/AccountSelector.css'; 
 
 const AccountSelector = ({ selectedAccounts, setSelectedAccounts }) => {

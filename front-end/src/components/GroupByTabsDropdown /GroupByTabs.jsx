@@ -13,7 +13,7 @@ const GroupByTabs = ({ groupByOptions = [], activeTab, setActiveTab }) => {
 
   return (
     <div className="tabs-container">
-      {/* First 5 tabs */}
+      
       {visibleTabs.map((tab, index) => (
         <button
           key={tab.id}
@@ -24,7 +24,7 @@ const GroupByTabs = ({ groupByOptions = [], activeTab, setActiveTab }) => {
         </button>
       ))}
 
-      {/* More button */}
+      
       {moreTabs.length > 0 && (
         <div className="more-container">
           <button

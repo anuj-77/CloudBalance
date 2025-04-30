@@ -1,25 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { getFilterOptions, getGroupByOptions } from '../../axios/api/snowflakeService';
+import React, { useState } from 'react';
+import { getFilterOptions } from '../../axios/api/snowflakeService';
 import SpinnerLoading from '../SpinnerLoading/SpinnerLoading';
-import '../styles/FilterSideBar.css'
+import '../styles/FilterSideBar.css';
 
-const FilterSidebar = ({ selectedFilters, setSelectedFilters }) => {
-  const [groupByOptions, setGroupByOptions] = useState([]);
+const FilterSidebar = ({ groupByOptions = [], selectedFilters, setSelectedFilters }) => {
   const [expandedGroup, setExpandedGroup] = useState(null);
   const [filterOptions, setFilterOptions] = useState({});
   const [loadingGroup, setLoadingGroup] = useState(null);
-
-  useEffect(() => {
-    const fetchGroupByOptions = async () => {
-      try {
-        const response = await getGroupByOptions();
-        setGroupByOptions(response.data || []);
-      } catch (error) {
-        console.error('Failed to fetch group by options:', error);
-      }
-    };
-    fetchGroupByOptions();
-  }, []);
 
   const handleGroupClick = async (groupName) => {
     if (expandedGroup === groupName) {
@@ -35,14 +22,11 @@ const FilterSidebar = ({ selectedFilters, setSelectedFilters }) => {
         const response = await getFilterOptions(groupName);
         setFilterOptions((prev) => ({
           ...prev,
-          [groupName]: response.data || [],
+          [groupName]: response?.data || [],
         }));
       } catch (error) {
-        console.error('Failed to fetch filters for', groupName, error);
-        setFilterOptions((prev) => ({
-          ...prev,
-          [groupName]: [],
-        }));
+        console.error(`Failed to fetch filters for ${groupName}`, error);
+        setFilterOptions((prev) => ({ ...prev, [groupName]: [] }));
       } finally {
         setLoadingGroup(null);
       }
@@ -51,34 +35,30 @@ const FilterSidebar = ({ selectedFilters, setSelectedFilters }) => {
 
   const handleCheckboxChange = (groupName, value) => {
     setSelectedFilters((prev) => {
-      const currentSelections = prev[groupName] || [];
-      if (currentSelections.includes(value)) {
-        return {
-          ...prev,
-          [groupName]: currentSelections.filter((v) => v !== value),
-        };
-      } else {
-        return {
-          ...prev,
-          [groupName]: [...currentSelections, value],
-        };
-      }
+      const current = prev[groupName] || [];
+      return {
+        ...prev,
+        [groupName]: current.includes(value)
+          ? current.filter((v) => v !== value)
+          : [...current, value],
+      };
     });
   };
 
   return (
     <div className="filter-sidebar">
       <h3 className="filter-sidebar-title">Group By Filters</h3>
-
       <div className="group-by-list">
-        {groupByOptions.map((group) => (
+        {groupByOptions?.map((group) => (
           <div key={group.id} className="group-item">
             <button
               className="group-button"
-              onClick={() => handleGroupClick(group.groupName)}
+              onClick={(e) => {
+                e.preventDefault();
+                handleGroupClick(group.groupName);
+              }}
             >
-              {group.displayName}
-              {expandedGroup === group.groupName ? ' ▲' : ' ▼'}
+              {group.displayName} {expandedGroup === group.groupName ? '▲' : '▼'}
             </button>
 
             {expandedGroup === group.groupName && (
@@ -86,12 +66,12 @@ const FilterSidebar = ({ selectedFilters, setSelectedFilters }) => {
                 {loadingGroup === group.groupName ? (
                   <SpinnerLoading />
                 ) : (filterOptions[group.groupName] || []).length > 0 ? (
-                  (filterOptions[group.groupName]).map((filter, idx) => (
+                  filterOptions[group.groupName].map((filter, idx) => (
                     <label key={idx} className="filter-option">
                       <input
                         type="checkbox"
                         value={filter}
-                        checked={(selectedFilters[group.groupName] || []).includes(filter)}
+                        checked={selectedFilters[group.groupName]?.includes(filter)}
                         onChange={() => handleCheckboxChange(group.groupName, filter)}
                       />
                       {filter}

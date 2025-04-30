@@ -1,6 +1,9 @@
 package com.cloudBalance.backEnd.service.impl;
 
 import com.cloudBalance.backEnd.dto.UserDTO;
+import com.cloudBalance.backEnd.exceptions.AccountNotFoundException;
+import com.cloudBalance.backEnd.exceptions.EmailAlreadyExistsException;
+import com.cloudBalance.backEnd.exceptions.UserNotFoundException;
 import com.cloudBalance.backEnd.mapper.UserMapper;
 import com.cloudBalance.backEnd.model.Accounts;
 import com.cloudBalance.backEnd.model.ERole;
@@ -35,7 +38,9 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.userMap(userDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println("Password"+user.getPassword());
-
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new EmailAlreadyExistsException("A user with this email already exists" );
+        }
         userRepository.save(user);
 
         userDTO.setId(user.getId());
@@ -47,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
         return userMapper.userDTOMapWithoutPassword(user);
     }
 
@@ -55,16 +60,11 @@ public class UserServiceImpl implements UserService {
 @Override
 public String updateUser(Long id, UserDTO userDTO) {
     User existingUser = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
     existingUser.setEmail(userDTO.getEmail());
     existingUser.setFirstName(userDTO.getFirstName());
     existingUser.setLastName(userDTO.getLastName());
-
-    // Update password if provided
-//    if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
-//        existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-//    }
 
     // Update role
     ERole newRole = ERole.valueOf(userDTO.getRole());
@@ -75,7 +75,7 @@ public String updateUser(Long id, UserDTO userDTO) {
         if (userDTO.getAccounts() != null && !userDTO.getAccounts().isEmpty()) {
             List<Accounts> accountList = userDTO.getAccounts().stream()
                     .map(accountId -> accountsRepository.findById(accountId)
-                            .orElseThrow(() -> new RuntimeException("Account not found with id: " + accountId)))
+                            .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + accountId)))
                     .collect(Collectors.toList());
             existingUser.setAccounts(accountList);
         }
@@ -92,13 +92,13 @@ public String updateUser(Long id, UserDTO userDTO) {
     @Override
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(userMapper:: userDTOMap).toList();
+        return users.stream().map(userMapper:: userDTOMapWithoutPassword).toList();
     }
 
 
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
         return userMapper.userDTOMapWithoutPassword(user);
     }
 
@@ -106,7 +106,7 @@ public String updateUser(Long id, UserDTO userDTO) {
     public UserDTO getCurrentUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Logged-in user not found with email: " + email));
         return userMapper.userDTOMapWithoutPassword(user);
     }
 

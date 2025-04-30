@@ -27,7 +27,7 @@ public class SnowFlakeController {
     @PostMapping("/cost")
     public ResponseEntity<APIResponse<?>> getTotalCosting(@Valid @RequestBody UserCostExplorerRequest request) {
         return ResponseEntity.ok(
-                new APIResponse<>(200, "Success", snowflakeService.getTotalCosting(request))
+                new APIResponse<>(200, "Success", snowflakeService.getTop5AndOthersCosting(request))
         );
     }
 
@@ -35,6 +35,12 @@ public class SnowFlakeController {
     public ResponseEntity<APIResponse<List<String>>> getFilterOptions(@RequestParam("groupBy") String groupByField) {
         List<String> options = snowflakeService.getFilterOptions(groupByField);
         return ResponseEntity.ok(new APIResponse<>(200, "Success", options));
+    }
+    @PostMapping("/complete-cost")
+    public ResponseEntity<APIResponse<?>> getCompleteCosting(@Valid @RequestBody UserCostExplorerRequest request) {
+        return ResponseEntity.ok(
+                new APIResponse<>(200, "Success", snowflakeService.getTotalCosting(request))
+        );
     }
 
 }

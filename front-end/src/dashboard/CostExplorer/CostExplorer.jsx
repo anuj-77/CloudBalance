@@ -1,108 +1,127 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import SearchableDropdown from '../../components/DropDownMenu/DropDownMenu';
 import FilterSidebar from '../../components/FilterSideBar/FilterSidebar';
-import GroupByPage from '../../components/GroupByPage';
+import GroupByPage from '../../components/GroupByTabsDropdown /GroupByPage';
 import DateRangeSelector from '../../components/DateRangeSelector/DateRangeSelector';
 import CostExplorerGraph from '../../components/CostExplorerGraphs/CostExplorerGraphs';
-import useCostDataFetcher from './useCostDataFetcher';
 import SpinnerLoading from '../../components/SpinnerLoading/SpinnerLoading';
 import { exportToExcel } from '../../roleUtils/exporttoExcel';
-import '../../components/styles/CostExplorer.css'
+import { getGroupByOptions, getCostData } from '../../axios/api/snowflakeService';
+import '../../components/styles/CostExplorer.css';
 
-function CostExplorer() {
+const CostExplorer = () => {
   const [selected, setSelected] = useState(null);
   const [accounts, setAccounts] = useState([]);
 
+  const [groupByOptions, setGroupByOptions] = useState([]);
   const [selectedGroupBy, setSelectedGroupBy] = useState('');
   const [selectedFilters, setSelectedFilters] = useState({});
   const [startMonth, setStartMonth] = useState('');
   const [endMonth, setEndMonth] = useState('');
+  const [costData, setCostData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const { costData, loading } = useCostDataFetcher({
-    groupBy: selectedGroupBy,
-    filters: selectedFilters,
-    startMonth,
-    endMonth,
-  });
+  useEffect(() => {
+    const fetchGroupByOptions = async () => {
+      try {
+        const res = await getGroupByOptions();
+        const options = res.data || [];
+        setGroupByOptions(options);
+        if (options.length > 0) setSelectedGroupBy(options[0]?.groupName);
+      } catch (error) {
+        console.error('Failed to fetch group-by options', error);
+      }
+    };
+    fetchGroupByOptions();
+  }, []);
+
+  useEffect(() => {
+    const fetchCostData = async () => {
+      if (!selectedGroupBy || !startMonth || !endMonth) return;
+      try {
+        setLoading(true);
+        const payload = {
+          groupBy: selectedGroupBy,
+          filters: selectedFilters,
+          startMonth,
+          endMonth,
+        };
+        const res = await getCostData(payload);
+        setCostData(res?.data || []);
+      } catch (err) {
+        console.error('Failed to fetch cost data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCostData();
+  }, [selectedGroupBy, selectedFilters, startMonth, endMonth]);
 
   return (
     <div className="cost-explorer-container">
       <h1 className="cost-explorer-title">Cost Explorer</h1>
 
       <div className="cost-explorer-below-title">
-        <p className="cost-explorer-subtitle">How to always be aware of cost changes and history.</p>
+        <p className="cost-explorer-subtitle">Always be aware of your cost history and trends.</p>
         <div>
           <SearchableDropdown
             label="Select Account"
             options={accounts}
-            getOptionLabel={(acc) => acc.accountName}
-            getOptionValue={(acc) => acc.roleArn}
+            getOptionLabel={(acc) => acc?.accountName}
+            getOptionValue={(acc) => acc?.roleArn}
             value={selected}
             onChange={setSelected}
           />
-          {selected && (
-            <p className="selected-account">
-              Selected Account: {selected.accountName}
-            </p>
+          {selected?.accountName && (
+            <p className="selected-account">Selected Account: {selected.accountName}</p>
           )}
         </div>
       </div>
+
       <div className="cost-explorer-box">
         <div className="cost-explorer-content">
-          {/* 🔥 GroupBy + DateSelectors Row */}
           <div className="top-controls">
             <GroupByPage
+              groupByOptions={groupByOptions}
               selectedGroupBy={selectedGroupBy}
               setSelectedGroupBy={setSelectedGroupBy}
             />
-            <div className="date-range-selectors">
-              <DateRangeSelector
-                startMonth={startMonth}
-                endMonth={endMonth}
-                setStartMonth={setStartMonth}
-                setEndMonth={setEndMonth}
-              />
-            </div>
+            <DateRangeSelector
+              startMonth={startMonth}
+              endMonth={endMonth}
+              setStartMonth={setStartMonth}
+              setEndMonth={setEndMonth}
+            />
           </div>
 
-          {/* 🔥 Graph / Table Area */}
           <div className="cost-explorer-main-area">
             {loading ? (
               <SpinnerLoading />
             ) : (
               <>
-                {/* Render Graph */}
-                <CostExplorerGraph
-                  costData={costData}
-                  groupByKey={selectedGroupBy}
-                />
-
-                {/* Export Button only if Data loaded */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                  <button className="export-btn" onClick={() => exportToExcel(costData, selectedGroupBy)}>
-                    Export to Excel
-                  </button>
-                </div>
+                <CostExplorerGraph costData={costData} groupByKey={selectedGroupBy} />
+                {costData?.length > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                    <button className="export-btn" onClick={() => exportToExcel(costData, selectedGroupBy)}>
+                      Export to Excel
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </div>
-
-
         </div>
 
-        {/* 🔥 Sidebar */}
         <div className="cost-explorer-sidebar">
           <FilterSidebar
+            groupByOptions={groupByOptions}
             selectedFilters={selectedFilters}
             setSelectedFilters={setSelectedFilters}
           />
         </div>
       </div>
-
     </div>
-
-
   );
-}
+};
 
 export default CostExplorer;

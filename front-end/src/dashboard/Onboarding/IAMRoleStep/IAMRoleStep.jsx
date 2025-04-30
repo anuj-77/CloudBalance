@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CopyableCodeContainer from "../../../components/CopyableCodeContainer.jsx/CopyableCodeContainer";
+import iAmRoleFormConfig from "./iAmRoleFormConfig";
 import img1 from '../../../assets/img-1.png';
 import '../../../components/styles/IAMRoleStep.css';
-import iAmRoleFormConfig from "./iAmRoleFormConfig";
 
 const IAMRoleStep = ({ formData, setFormData }) => {
   const navigate = useNavigate();
