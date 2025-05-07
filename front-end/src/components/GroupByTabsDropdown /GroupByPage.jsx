@@ -8,6 +8,7 @@ const GroupByPage = ({ groupByOptions = [], selectedGroupBy, setSelectedGroupBy 
     useEffect(() => {
       if (groupByOptions?.length > 0 && !selectedGroupBy) {
         setSelectedGroupBy(groupByOptions[0]?.groupName);
+
       }
     }, [groupByOptions, selectedGroupBy, setSelectedGroupBy]);
   

@@ -23,7 +23,7 @@ function SideBar({ isOpen, toggleSidebar }) {
         return item.readOnly === true;
 
       case 'CUSTOMER':
-        return ['/dashboard/AwsService', '/dashboard/CostExplorer'].includes(item.path);
+        return ['/dashboard/AwsService', '/dashboard/Onboarding','/dashboard/CostExplorer'].includes(item.path);
 
       default:
         return false;

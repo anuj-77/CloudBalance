@@ -12,7 +12,7 @@ const SearchableDropdown = ({ label = "Select Account", value, onChange }) => {
     const fetchAccounts = async () => {
       try {
         const response = await getAllAccounts();
-        setOptions(response); // Full objects
+        setOptions(response); 
       } catch (error) {
         console.error("Failed to load accounts", error);
       }

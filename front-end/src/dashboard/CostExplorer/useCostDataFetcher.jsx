@@ -1,4 +1,4 @@
-// src/hooks/useCostDataFetcher.jsx
+
 import { useState, useEffect } from 'react';
 import { getCostData } from '../../axios/api/snowflakeService';
 

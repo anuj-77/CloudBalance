@@ -43,16 +43,6 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         var jwt = jwtService.generateToken((UserDetails) new UserDetailsImpl(user));
-
-
-//        // Extract user role from JWT token(This is a GPT answer! Not Understandable solution)
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        if (principal instanceof UserDetailsImpl) {
-//            UserDetailsImpl userDetails = (UserDetailsImpl) principal;
-//            // Proceed with userDetails
-//        } else {
-//            // Handle the case where principal is not an instance of UserDetailsImpl
-//        }
         return AuthResponse.builder()
                 .token(jwt)
                 .build();

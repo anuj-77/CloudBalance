@@ -14,8 +14,10 @@ import com.cloudBalance.backEnd.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,37 +58,48 @@ public class UserServiceImpl implements UserService {
         return userMapper.userDTOMapWithoutPassword(user);
     }
 
-@Transactional
-@Override
-public String updateUser(Long id, UserDTO userDTO) {
-    User existingUser = userRepository.findById(id)
-            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+    @Transactional
+    @Override
+    public String updateUser(Long id, UserDTO userDTO) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
-    existingUser.setEmail(userDTO.getEmail());
-    existingUser.setFirstName(userDTO.getFirstName());
-    existingUser.setLastName(userDTO.getLastName());
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + currentUsername));
 
-    // Update role
-    ERole newRole = ERole.valueOf(userDTO.getRole());
-    existingUser.setRole(newRole);
-
-    // Handle account associations based on role
-    if (newRole == ERole.CUSTOMER) {
-        if (userDTO.getAccounts() != null && !userDTO.getAccounts().isEmpty()) {
-            List<Accounts> accountList = userDTO.getAccounts().stream()
-                    .map(accountId -> accountsRepository.findById(accountId)
-                            .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + accountId)))
-                    .collect(Collectors.toList());
-            existingUser.setAccounts(accountList);
+        if (currentUser.getId().equals(id)) {
+            // Prevent role change and logout
+            SecurityContextHolder.clearContext();
+            throw new AccessDeniedException("Admins cannot change their own role. You have been logged out.");
         }
-    } else {
-        // Clear accounts if role is not CUSTOMER
-        existingUser.setAccounts(new ArrayList<>());
+
+        existingUser.setEmail(userDTO.getEmail());
+        existingUser.setFirstName(userDTO.getFirstName());
+        existingUser.setLastName(userDTO.getLastName());
+
+        // Update role
+        ERole newRole = ERole.valueOf(userDTO.getRole());
+        existingUser.setRole(newRole);
+
+        // Handle account associations based on role
+        if (newRole == ERole.CUSTOMER) {
+            if (userDTO.getAccounts() != null && !userDTO.getAccounts().isEmpty()) {
+                List<Accounts> accountList = userDTO.getAccounts().stream()
+                        .map(accountId -> accountsRepository.findById(accountId)
+                                .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + accountId)))
+                        .collect(Collectors.toList());
+                existingUser.setAccounts(accountList);
+            }
+        } else {
+            // Clear accounts if role is not CUSTOMER
+            existingUser.setAccounts(new ArrayList<>());
+        }
+
+        userRepository.save(existingUser);
+        return "User Updated";
     }
 
-    userRepository.save(existingUser);
-    return "User Updated";
-}
 
 
     @Override

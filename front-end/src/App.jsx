@@ -26,7 +26,7 @@ function App() {
 
           <Route path="/dashboard" element={<Layout />}>
 
-            <Route element={<ProtectedRoute allowedRoles={["ADMIN", "READ_ONLY"]} />} >
+            <Route element={<ProtectedRoute allowedRoles={["ADMIN", "READ_ONLY", "CUSTOMER"]} />} >
               <Route path="UserManagement" element={<UserManagement />} />
             </Route>
 
@@ -42,7 +42,7 @@ function App() {
               <Route path="AwsService" element={<AWSService />} />
             </Route>
 
-             <Route element={<ProtectedRoute allowedRoles={["ADMIN", "READ_ONLY"]} />} >
+             <Route element={<ProtectedRoute allowedRoles={["ADMIN", "READ_ONLY", "CUSTOMER"]} />} >
                 <Route path="Onboarding" element={<Onboarding />} />
                 <Route path="Onboarding/success" element={<SubmitSuccessPage />} />
               </Route>  

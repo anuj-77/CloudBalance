@@ -1,4 +1,3 @@
-// src/components/CostExplorerGraph.jsx
 import React from 'react';
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
@@ -10,36 +9,71 @@ ReactFusioncharts.fcRoot(FusionCharts, Charts, FusionTheme);
 const CostExplorerGraph = ({ costData = [], groupByKey = '' }) => {
   const hasData = costData?.length > 0;
 
-  const categories = hasData 
-    ? [...new Set(costData.map(item => (item?.USAGE_DATE || item?.USAGE_MONTH)?.substring(0, 7)))]
+  // Helper function to generate an array of months between two dates
+  const getAllMonths = (start, end) => {
+    const months = [];
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    startDate.setDate(1); // Ensure we're at the start of the month
+    while (startDate <= endDate) {
+      const month = startDate.toISOString().substring(0, 7);
+      months.push(month);
+      startDate.setMonth(startDate.getMonth() + 1);
+    }
+    return months;
+  };
+
+  // Determine the range of months in your data
+  const allMonths = hasData
+    ? getAllMonths(
+        costData.reduce((min, item) => {
+          const date = new Date(item?.USAGE_DATE || item?.USAGE_MONTH);
+          return date < min ? date : min;
+        }, new Date()),
+        costData.reduce((max, item) => {
+          const date = new Date(item?.USAGE_DATE || item?.USAGE_MONTH);
+          return date > max ? date : max;
+        }, new Date(0))
+      )
     : ["No Data"];
 
+  // Build the series map with all months initialized to 0
   const seriesMap = {};
-
   if (hasData) {
     costData.forEach(item => {
-      const group = item?.[groupByKey] ?? "Others"; //for betterment of result use '??'
+      const group = item?.[groupByKey] ?? "Others";
       const month = (item?.USAGE_DATE || item?.USAGE_MONTH)?.substring(0, 7);
-
       if (!seriesMap[group]) {
         seriesMap[group] = {};
+        allMonths.forEach(m => {
+          seriesMap[group][m] = 0;
+        });
       }
-
-      seriesMap[group][month] = (seriesMap[group][month] || 0) + item?.TOTAL_USAGE_COST;
+      seriesMap[group][month] += item?.TOTAL_USAGE_COST || 0;
     });
   }
 
+  // Prepare the dataset for the chart
   const dataset = hasData
     ? Object.keys(seriesMap).map(group => ({
         seriesname: group,
-        data: categories.map(month => ({
-          value: seriesMap[group]?.[month]?.toFixed(2) || "0",
+        data: allMonths.map(month => ({
+          value: seriesMap[group][month]?.toFixed(2) || "0",
         })),
       }))
-    : [{
-        seriesname: "No Data",
-        data: [{ value: "0" }]
-      }];
+    : [
+        {
+          seriesname: "No Data",
+          data: [{ value: "0" }],
+        },
+      ];
+
+  // Prepare the categories for the chart
+  const categories = [
+    {
+      category: allMonths.map(month => ({ label: month })),
+    },
+  ];
 
   const chartDataSource = {
     chart: {
@@ -50,13 +84,7 @@ const CostExplorerGraph = ({ costData = [], groupByKey = '' }) => {
       drawCrossLine: "1",
       formatNumberScale: "0",
     },
-    categories: [
-      {
-        category: categories.map(month => ({
-          label: month,
-        })),
-      },
-    ],
+    categories: categories,
     dataset: dataset,
   };
 
@@ -97,13 +125,15 @@ const CostExplorerGraph = ({ costData = [], groupByKey = '' }) => {
             </thead>
             <tbody>
               {hasData ? (
-                costData.map((row, idx) => (
-                  <tr key={idx}>
-                    <td>{(row?.USAGE_DATE || row?.USAGE_MONTH)?.substring(0, 7)}</td>
-                    <td>{row?.[groupByKey]}</td>
-                    <td>${parseFloat(row?.TOTAL_USAGE_COST || 0).toFixed(2)}</td>
-                  </tr>
-                ))
+                Object.keys(seriesMap).map(group =>
+                  allMonths.map(month => (
+                    <tr key={`${group}-${month}`}>
+                      <td>{month}</td>
+                      <td>{group}</td>
+                      <td>${seriesMap[group][month].toFixed(2)}</td>
+                    </tr>
+                  ))
+                )
               ) : (
                 <tr>
                   <td colSpan="3" className="no-data-cell">No Cost Data Available</td>
